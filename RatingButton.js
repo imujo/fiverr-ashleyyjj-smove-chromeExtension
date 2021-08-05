@@ -16,6 +16,8 @@ template.innerHTML = `
         align-items: center;
         cursor: pointer;
         font-size: 14px;
+
+        transition: all .15s ease;
       }
 
       
@@ -26,7 +28,7 @@ template.innerHTML = `
 
 
 
-    <li class="rating-button " id='rating-button' ></li>
+    <li title='Rate the property' class="rating-button" id='rating-button' ></li>
  
 `
 
@@ -51,37 +53,35 @@ class RatingButton extends HTMLElement {
 
 
 
-        // LATER --- onClick -> remove event listener, send data, reroute
+
         button.addEventListener('click', ()=>{
             const currentPage = this.getAttribute('current-page')
             const title = this.getAttribute('title')
 
-
+    
             
-            if (button.classList.contains('active')){    
-                button.style.backgroundColor = 'white'
-                button.style.color = color
-            }else{
-                button.style.backgroundColor = color
-                button.style.color = 'white'
-            }
-
-            button.classList.toggle('active')
 
 
-
-            chrome.runtime.sendMessage({
-                message: 'nextPage',
-                currentPage: currentPage,
-                data: {
-                    title: title,
-                    rating: rating
-                }
-                
-            })
+                chrome.runtime.sendMessage({
+                    message: 'nextPage',
+                    currentPage: currentPage,
+                    data: {
+                        title: title,
+                        rating: rating
+                    }
+                    
+                })
+            
         })
 
-
+        button.addEventListener('mouseenter', ()=>{
+            button.style.backgroundColor = color
+            button.style.color = 'white'
+        })
+        button.addEventListener('mouseout', ()=>{
+            button.style.backgroundColor = 'white'
+            button.style.color = color
+        })
 
     }
 }

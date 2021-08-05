@@ -69,13 +69,13 @@ template.innerHTML = `
 
 
     <div class="content">
-        <div class="progress">
+        <div title='Rating progress' class="progress">
         <p><span id='current-page' >1</span> out of <span id='pages' >4</span></p>
         </div>
 
-        <div class="title">
+        <div title='Title' class="title">
             <h2 id='title' ></h2>
-            <p id='skip' >Skip</p>
+            <p id='skip' title='Skip to the next rating section' >Skip</p>
         </div>
 
         <ul class="rating-container">
@@ -90,6 +90,7 @@ template.innerHTML = `
             name="note"
             class="note"
             id="note"
+            title='Make a note'
             rows="3"
             placeholder="Make a quick note..."
         ></textarea>

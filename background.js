@@ -64,28 +64,51 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 // ON CLICK POPUP
 chrome.runtime.onMessage.addListener((req, sender, sendRes)=>{
 
+    if (req.message === 'popupOpened'){
         // GET INFO ABOUT TAB
         chrome.tabs.query({active: true, lastFocusedWindow: true}, tabs => {
-            const tabId = tabs[0].id
-            const website = tabs[0].url.split('.')[1]
+        const tabId = tabs[0].id
+        const website = tabs[0].url.split('.')[1]
 
-            if (req.message === 'popupOpened' && isProductPage(tabs[0].url)){
+        if (req.message === 'popupOpened' && isProductPage(tabs[0].url)){
 
-                
-                // GET WEBSITE DATA
-                chrome.tabs.sendMessage(tabId, {
-                    message: 'getData',
-                    website: website
-                }, res=>{
-                    if (res.message === 'success'){
-                        console.log(res.data)
             
-                    }else{
-                        console.log('ERROR - Getting websiteData')
-                    }
-                })
-            }
+            // GET WEBSITE DATA
+            chrome.tabs.sendMessage(tabId, {
+                message: 'getData',
+                website: website
+            }, res=>{
+                if (res.message === 'success'){
+                    console.log(res.data)
+        
+                }else{
+                    console.log('ERROR - Getting websiteData')
+                }
+            })
+        }
         });
-        return true;
+
+    }
+
+
+    return true;
     
+})
+
+chrome.runtime.onMessage.addListener((req, sender, sendRes)=>{
+    if (req.message === 'nextPage'){
+
+        
+        // add rating to database
+        console.log(req.data)
+
+        // send message to popup - next page
+        chrome.runtime.sendMessage({
+            message: 'popupNext',
+            page: parseInt(req.currentPage)
+        })
+        
+        
+    }
+    return true;
 })

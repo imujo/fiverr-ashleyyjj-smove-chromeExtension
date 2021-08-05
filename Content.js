@@ -12,7 +12,8 @@ template.innerHTML = `
     .content {
         display: grid;
         grid-template-rows: min-content min-content min-content auto;
-        padding: 10px 0px;
+        padding-bottom: 10px;
+        padding-top: 5px;
       }
 
       .progress span {
@@ -26,7 +27,6 @@ template.innerHTML = `
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-top: 5px;
       }
 
       .title p {
@@ -90,7 +90,7 @@ template.innerHTML = `
             name="note"
             class="note"
             id="note"
-            rows="3"
+            rows="2"
             placeholder="Make a quick note..."
         ></textarea>
         </form>

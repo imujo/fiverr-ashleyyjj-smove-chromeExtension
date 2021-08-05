@@ -24,23 +24,33 @@ template.innerHTML =
   }
   .rating-list .labels li {
     font-weight: 400;
-    font-size: 12px;
+    font-size: 13px;
     line-height: 1.8em;
   }
 
   .rating-list .ratings li {
     font-weight: 500;
-    font-size: 13px;
+    font-size: 14px;
     line-height: 1.8em;
   }
 
   h4 {
     font-weight: 400;
+    margin: 0;
+    font-size: 12px;
+    margin-bottom: 3px;
+  }
+  .bold{
+      font-weight: 600;
+      font-size: 13px;
   }
 </style>
 
 <div class="ratingSummary">
-    <h4>How you rated this home!</h4>
+    <div class='message' >
+        <h4><span class='bold' >Congrats, you’ve rated this home!</span></h4>
+        <h4>This is saved in your account area & below is an overview of how you rated this home.</h4>
+    </div>
     <div class="rating-list">
     <ul class="labels">
 

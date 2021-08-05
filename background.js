@@ -79,7 +79,9 @@ chrome.runtime.onMessage.addListener((req, sender, sendRes)=>{
                 website: website
             }, res=>{
                 if (res.message === 'success'){
-                    console.log(res.data)
+                    let data = res.data
+                    data.websiteUrl = tabs[0].url
+                    console.log(data)
         
                 }else{
                     console.log('ERROR - Getting websiteData')

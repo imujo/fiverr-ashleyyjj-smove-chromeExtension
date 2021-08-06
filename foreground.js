@@ -1,8 +1,10 @@
 
 // SELECTING EACH WEBSITES DATA
 const getWebsiteData = (website) => {
+
+    // if it doesnt find anything, set it to null !!!!!!!!
     if (website === 'onthemarket'){
-        var title = document.getElementsByClassName('title-address')[0].innerHTML
+        var address = document.getElementsByClassName('address-address')[0].innerHTML
 
         var price = document.getElementsByClassName('price-data')[0].innerHTML
 
@@ -13,7 +15,7 @@ const getWebsiteData = (website) => {
 
         var bathrooms = parseInt(document.getElementsByClassName('property-icon-number')[1].innerHTML)
     }else if (website === 'zoopla'){
-        var title = document.getElementsByClassName('css-juh6tp-DisplayAddressLabel')[0].innerHTML
+        var address = document.getElementsByClassName('css-juh6tp-DisplayAddressLabel')[0].innerHTML
 
         var price = document.getElementsByClassName('css-zwo9uh-PricingLabel')[0].innerHTML
 
@@ -24,7 +26,7 @@ const getWebsiteData = (website) => {
 
         var bathrooms = parseInt(document.getElementsByClassName('css-8rvu8h-AttributeLabel')[1].innerHTML.replace('baths', ''))
     }else if (website === 'rightmove'){
-        var title = document.getElementsByClassName('_2uQQ3SV0eMHL1P6t5ZDo2q')[0].innerHTML
+        var address = document.getElementsByClassName('_2uQQ3SV0eMHL1P6t5ZDo2q')[0].innerHTML
 
         var price = document.getElementsByClassName('_1gfnqJ3Vtd1z40MlC0MzXu')[0].childNodes[0].innerHTML
 
@@ -40,9 +42,9 @@ const getWebsiteData = (website) => {
     }
 
     const data = {
-        title: title,
+        address: address,
         price: price,
-        imageUrl: imageUrl,
+        imageurl: imageUrl,
         bedrooms: bedrooms,
         bathrooms: bathrooms
     }
@@ -57,8 +59,13 @@ const getWebsiteData = (website) => {
 // LISTENING TO REQUEST FOR THE DATA
 chrome.runtime.onMessage.addListener((req, sender, sendRes)=>{
     if (req.message === 'getData'){
-        
-        const websiteData = getWebsiteData(req.website)
+
+        const websiteUrl = req.websiteurl
+        const website = websiteUrl.split('.')[1]
+
+        const websiteData = getWebsiteData(website)
+        websiteData.websiteurl = websiteUrl
+
 
         websiteData !== null ? 
         sendRes({
@@ -70,8 +77,8 @@ chrome.runtime.onMessage.addListener((req, sender, sendRes)=>{
             message: 'fail'
         }) 
 
-        return true;
     }
+    return true;
 })
 
 

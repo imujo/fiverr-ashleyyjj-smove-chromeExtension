@@ -63,7 +63,37 @@ chrome.runtime.onMessage.addListener((req, sender, sendRes)=>{
     return true;
 })
 
+chrome.runtime.onMessage.addListener((req, sender, sendRes)=>{
+    if (req.message === 'summaryPage'){
+        const content = document.getElementById('content')
+        content.innerHTML = `<rating-summary data='${JSON.stringify(data)}' ></rating-summary>`
+    }
+    return true;
+})
 
+chrome.runtime.onMessage.addListener((req, sender, sendRes)=>{
+    if (req.message === 'errorPage'){
+        const content = document.getElementById('content')
+        content.innerHTML = `<h1> There has been an error </h1>`
+    }
+    return true;
+})
+
+chrome.runtime.onMessage.addListener((req, sender, sendRes)=>{
+    if (req.message === 'inactivePage'){
+        const content = document.getElementById('content')
+        content.innerHTML = `<h1> Inactive page </h1>`
+    }
+    return true;
+})
+
+chrome.runtime.onMessage.addListener((req, sender, sendRes)=>{
+    if (req.message === 'ratingPage'){
+        const content = document.getElementById('content')
+        content.innerHTML = `<rate-properties current-page='1' pages='${routes.length}' title="${routes[0].title}"></rate-properties>`
+    }
+    return true;
+})
 
 
 document.getElementById('close').addEventListener('click', ()=>{
@@ -71,10 +101,6 @@ document.getElementById('close').addEventListener('click', ()=>{
 })
 
 
-
-
-const content = document.getElementById('content')
-content.innerHTML = `<rate-properties current-page='1' pages='${routes.length}' title="${routes[0].title}"></rate-properties>`
 
 
 

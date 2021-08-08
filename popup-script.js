@@ -30,7 +30,9 @@ chrome.runtime.onMessage.addListener((req, sender, sendRes)=>{
     if (req.message === 'summaryPage'){
         const content = document.getElementById('content')
         const note = document.querySelector('.note')
-        note.remove()
+        if (note){
+            note.remove()
+        }
         content.innerHTML = `<rating-summary data='${JSON.stringify(req.ratings)}' ></rating-summary>`
     }
     return true;
@@ -40,6 +42,10 @@ chrome.runtime.onMessage.addListener((req, sender, sendRes)=>{
     if (req.message === 'errorPage'){
         const content = document.getElementById('content')
         content.innerHTML = `<h1> There has been an error </h1>`
+        const note = document.querySelector('.note')
+        if (note){
+            note.remove()
+        }
     }
     return true;
 })
@@ -48,6 +54,10 @@ chrome.runtime.onMessage.addListener((req, sender, sendRes)=>{
     if (req.message === 'inactivePage'){
         const content = document.getElementById('content')
         content.innerHTML = `<h1> Inactive page </h1>`
+        const note = document.querySelector('.note')
+        if (note){
+            note.remove()
+        }
     }
     return true;
 })

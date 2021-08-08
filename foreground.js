@@ -2,7 +2,6 @@
 // SELECTING EACH WEBSITES DATA
 const getWebsiteData = (website) => {
 
-    // if it doesnt find anything, set it to null !!!!!!!!
     if (website === 'onthemarket'){
         var address = document.getElementsByClassName('title-address')[0].innerHTML
 
@@ -13,7 +12,12 @@ const getWebsiteData = (website) => {
 
         var bedrooms = parseInt(document.getElementsByClassName('property-icon-number')[0].innerHTML)
 
-        var bathrooms = parseInt(document.getElementsByClassName('property-icon-number')[1].innerHTML)
+
+        try {
+            var bathrooms = parseInt(document.getElementsByClassName('property-icon-number')[1].innerHTML)            
+        } catch (error) {
+            var bathrooms = undefined         
+        }
     }else if (website === 'zoopla'){
         var address = document.getElementsByClassName('css-juh6tp-DisplayAddressLabel')[0].innerHTML
 
@@ -24,7 +28,13 @@ const getWebsiteData = (website) => {
 
         var bedrooms = parseInt(document.getElementsByClassName('css-8rvu8h-AttributeLabel')[0].innerHTML.replace('beds', ''))
 
-        var bathrooms = parseInt(document.getElementsByClassName('css-8rvu8h-AttributeLabel')[1].innerHTML.replace('baths', ''))
+
+        try {
+            var bathrooms = parseInt(document.getElementsByClassName('css-8rvu8h-AttributeLabel')[1].innerHTML.replace('baths', ''))
+            
+        } catch (error) {
+            var bathrooms = undefined         
+        }
     }else if (website === 'rightmove'){
         var address = document.getElementsByClassName('_2uQQ3SV0eMHL1P6t5ZDo2q')[0].innerHTML
 
@@ -35,7 +45,14 @@ const getWebsiteData = (website) => {
 
         var bedrooms = parseInt(document.getElementsByClassName('_1fcftXUEbWfJOJzIUeIHKt')[1].innerHTML.slice(1))
 
-        var bathrooms = parseInt(document.getElementsByClassName('_1fcftXUEbWfJOJzIUeIHKt')[2].innerHTML.slice(1))
+        try {
+            var bathrooms = parseInt(document.getElementsByClassName('_1fcftXUEbWfJOJzIUeIHKt')[2].innerHTML.slice(1))
+            
+        } catch (error) {
+            var bathrooms = undefined         
+        }
+
+
     }else{
         console.log('INVALID WEBSITE - getWebsiteData')
         return null

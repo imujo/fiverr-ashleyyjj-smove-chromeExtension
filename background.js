@@ -10,7 +10,7 @@ const sendWebsiteDataToDatabase = (data) => {
         headers: {"Content-type": "application/json; charset=UTF-8"}
         })
         .then(response => response.json()) 
-        .then(json => { console.log(json); return json.propertyid})
+        .then(json => { console.log(json); return json.isSuccess})
         .catch(err => {console.log(err); return false });
 }
 
@@ -157,7 +157,6 @@ const goToSummaryPage = (websiteUrl) => {
             let ratings = []
 
             data.forEach(rating=>{
-                console.log(rating)
                 ratings.push({
                     ratingOption: rating.ratingoption,
                     rating: rating.rating
@@ -210,6 +209,7 @@ const isProductPage = (url) => {
     const pages = [
         "https://www.rightmove.co.uk/properties/",
         "https://www.zoopla.co.uk/for-sale/details/",
+        "https://www.zoopla.co.uk/new-homes/details/",
         "https://www.onthemarket.com/details/"
     ]
 
@@ -305,16 +305,16 @@ chrome.runtime.onMessage.addListener((req, sender, sendRes)=>{
                                     getUserRatings(websiteUrl)
                                         .then(userRatings=>{
 
-                                            
                                             // IF YES:
-                                            if (userRatings){
-                                                userRatings.forEach((rating, i)=>{
-                                                    if(!rating.rating){// -->> ODE NESTO NE VALJA
-                                                        goToRatingPage(websiteUrl, i + 1)
-                                                    }else{
-                                                        goToSummaryPage(websiteUrl)
-                                                    }
-                                                })
+                                            if (userRatings.length){
+                                                // userRatings.forEach((rating, i)=>{
+                                                //     if(!rating.rating){// -->> ODE NESTO NE VALJA
+                                                //         goToRatingPage(websiteUrl, i)
+                                                //     }else{
+                                                //         goToSummaryPage(websiteUrl)
+                                                //     }
+                                                // })
+                                                goToSummaryPage(websiteUrl)
                                             // IF NO:
                                             }else{
                                                 addWebsiteToUser(websiteUrl)
@@ -330,11 +330,15 @@ chrome.runtime.onMessage.addListener((req, sender, sendRes)=>{
                                 else{
                                     // SEND WEBSITE DATA TO DATABASE
                                     sendWebsiteDataToDatabase(res.data)
-                                        .then(propertyId => {
-                                            // CONNECT USER TO PROPERTY
-                                            addWebsiteToUser(websiteUrl)
-                                                .then(()=> goToRatingPage(websiteUrl, 1))
-                                                .catch(()=> goToErrorPage)
+                                        .then(isSuccess => {
+                                            if (isSuccess){
+                                                // CONNECT USER TO PROPERTY
+                                                addWebsiteToUser(websiteUrl)
+                                                    .then(()=> goToRatingPage(websiteUrl, 1))
+                                                    .catch(()=> goToErrorPage())
+                                            }else{
+                                                goToErrorPage()
+                                            }
                                         })
                                         .catch(()=> goToErrorPage())
                         

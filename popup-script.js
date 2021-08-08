@@ -3,43 +3,6 @@ chrome.runtime.sendMessage({
 })
 
 
-const routes = [
-    {
-        id: 1,
-        title: 'Storage space:',
-    },
-    {
-        id: 2,
-        title: 'Bathroom size:',
-    },
-    {
-        id: 3,
-        title: 'No. of bedrooms:',
-    },
-    {
-        id: 4,
-        title: 'View:',
-    },
-]
-
-const data = [
-    {
-        title: 'Storage space:',
-        rating: 'Awful'
-    },
-    {
-        title: 'Bathroom size:',
-        rating: 'Amazing'
-    },
-    {
-        title: 'No. of bedrooms:',
-        rating: 'Good'
-    },
-    {
-        title: 'View:',
-        rating: 'Meh'
-    }
-]
 
 chrome.runtime.onMessage.addListener((req, sender, sendRes)=>{
     if (req.message === 'popupNext'){
@@ -66,7 +29,9 @@ chrome.runtime.onMessage.addListener((req, sender, sendRes)=>{
 chrome.runtime.onMessage.addListener((req, sender, sendRes)=>{
     if (req.message === 'summaryPage'){
         const content = document.getElementById('content')
-        content.innerHTML = `<rating-summary data='${JSON.stringify(data)}' ></rating-summary>`
+        const note = document.querySelector('.note')
+        note.remove()
+        content.innerHTML = `<rating-summary data='${JSON.stringify(req.ratings)}' ></rating-summary>`
     }
     return true;
 })
@@ -90,7 +55,10 @@ chrome.runtime.onMessage.addListener((req, sender, sendRes)=>{
 chrome.runtime.onMessage.addListener((req, sender, sendRes)=>{
     if (req.message === 'ratingPage'){
         const content = document.getElementById('content')
-        content.innerHTML = `<rate-properties current-page='1' pages='${routes.length}' title="${routes[0].title}"></rate-properties>`
+        const ratingoption = req.ratingoption
+        const page = req.page
+
+        content.innerHTML = `<rate-properties current-page='${page}' pages='4' title="${ratingoption}:"></rate-properties>`
     }
     return true;
 })

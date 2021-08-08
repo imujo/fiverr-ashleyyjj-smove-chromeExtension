@@ -82,12 +82,17 @@ class RatingSummary extends HTMLElement {
             Good: '#ffb158',
             Meh: 'black',
             Awful: '#c30101',
+            Unrated: '#00335640'
         }
 
 
         data.forEach(element=>{
-            const title = element.title
-            const rating = element.rating
+            const title = element.ratingOption
+            let rating = element.rating
+            if (!rating){
+              rating = 'Unrated'
+            }
+
 
             const labelNode = document.createElement('li')
             labelNode.innerHTML = title

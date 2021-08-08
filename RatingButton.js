@@ -66,7 +66,7 @@ class RatingButton extends HTMLElement {
                     message: 'nextPage',
                     currentPage: currentPage,
                     data: {
-                        title: title,
+                        ratingoption: title,
                         rating: rating
                     }
                     

@@ -4,7 +4,7 @@ const getWebsiteData = (website) => {
 
     // if it doesnt find anything, set it to null !!!!!!!!
     if (website === 'onthemarket'){
-        var address = document.getElementsByClassName('address-address')[0].innerHTML
+        var address = document.getElementsByClassName('title-address')[0].innerHTML
 
         var price = document.getElementsByClassName('price-data')[0].innerHTML
 
@@ -20,7 +20,7 @@ const getWebsiteData = (website) => {
         var price = document.getElementsByClassName('css-zwo9uh-PricingLabel')[0].innerHTML
 
 
-        var imageUrl = document.getElementsByClassName('css-14ovsg1-Slide')[0].childNodes[0].childNodes[0].childNodes[2].getAttribute('src')
+        var imageUrl = document.getElementsByClassName('css-1i4h94a-SlideImageWrapper')[1].childNodes[0].childNodes[2].getAttribute('src')
 
         var bedrooms = parseInt(document.getElementsByClassName('css-8rvu8h-AttributeLabel')[0].innerHTML.replace('beds', ''))
 

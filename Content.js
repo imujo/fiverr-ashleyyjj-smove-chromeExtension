@@ -46,23 +46,7 @@ template.innerHTML = `
       }
 
 
-      .note {
-        margin-top: 10px;
-        width: 100%;
-        resize: vertical;
-        font-family: "Poppins";
-        padding-left: 5px;
-        padding-top: 3px;
-        box-sizing: border-box;
-        border-color: lightgray;
-        border-radius: 6px;
-        max-height: 400px;
-        min-height: 30px;
-      }
-      .note:focus,
-      .note:active {
-        outline: none;
-      }
+      
     </style>
 
 
@@ -85,16 +69,9 @@ template.innerHTML = `
         <rating-button class='rating-btn' color='#009700' rating='Amazing' ></rating-button>
 
         </ul>
-        <form class="note-form">
-        <textarea
-            name="note"
-            class="note"
-            id="note"
-            rows="2"
-            title='Make a note'
-            placeholder="Make a quick note..."
-        ></textarea>
-        </form>
+
+        
+        
     </div>
 `
 
@@ -120,8 +97,8 @@ class Content extends HTMLElement {
                 message: 'nextPage',
                 currentPage: currentPage,
                 data: {
-                    title: title,
-                    rating: NaN
+                    ratingoption: title,
+                    rating: undefined
                 }
                 
             })

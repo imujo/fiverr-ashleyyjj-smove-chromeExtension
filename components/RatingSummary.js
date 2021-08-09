@@ -32,6 +32,18 @@ template.innerHTML =
     font-weight: 500;
     font-size: 14px;
     line-height: 1.8em;
+    opacity: 0;
+    transform: translateX(-20%);
+    animation: ani 0.5s forwards;
+  }
+  .rating-list .ratings li:nth-of-type(2){
+    animation-delay: 0.04s;
+  }
+  .rating-list .ratings li:nth-of-type(3){
+    animation-delay: calc(0.04s * 2);
+  }
+  .rating-list .ratings li:nth-of-type(4){
+    animation-delay: calc(0.04s * 3);
   }
 
   h4 {
@@ -43,6 +55,17 @@ template.innerHTML =
   .bold{
       font-weight: 600;
       font-size: 13px;
+  }
+
+  @keyframes ani {
+    form{
+      opacity: 0;
+      transform: translateX(-30%);
+    }
+    to{
+      opacity: 1;
+      transform: translateX(0);
+    }
   }
 </style>
 

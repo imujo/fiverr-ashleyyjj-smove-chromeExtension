@@ -3,13 +3,11 @@ chrome.runtime.sendMessage({
 })
 
 
-
+// ON NEXT
 chrome.runtime.onMessage.addListener((req, sender, sendRes)=>{
     if (req.message === 'popupNext'){
         
         const page = req.page
-        
-        
         
         const content = document.getElementById('content')
 
@@ -26,6 +24,7 @@ chrome.runtime.onMessage.addListener((req, sender, sendRes)=>{
     return true;
 })
 
+// ON SUMMARY PAGE
 chrome.runtime.onMessage.addListener((req, sender, sendRes)=>{
     if (req.message === 'summaryPage'){
         const content = document.getElementById('content')
@@ -38,6 +37,7 @@ chrome.runtime.onMessage.addListener((req, sender, sendRes)=>{
     return true;
 })
 
+// ON ERROR PAGE
 chrome.runtime.onMessage.addListener((req, sender, sendRes)=>{
     if (req.message === 'errorPage'){
         const content = document.getElementById('content')
@@ -50,6 +50,7 @@ chrome.runtime.onMessage.addListener((req, sender, sendRes)=>{
     return true;
 })
 
+// ON INACTIE PAGE
 chrome.runtime.onMessage.addListener((req, sender, sendRes)=>{
     if (req.message === 'inactivePage'){
         const content = document.getElementById('content')
@@ -62,6 +63,7 @@ chrome.runtime.onMessage.addListener((req, sender, sendRes)=>{
     return true;
 })
 
+// ON RATING PAGE
 chrome.runtime.onMessage.addListener((req, sender, sendRes)=>{
     if (req.message === 'ratingPage'){
         const content = document.getElementById('content')
@@ -74,6 +76,8 @@ chrome.runtime.onMessage.addListener((req, sender, sendRes)=>{
 })
 
 
+
+// Close
 document.getElementById('close').addEventListener('click', ()=>{
     window.close()
 })

@@ -1,7 +1,6 @@
 
-/* ------------------ FUNCTIONS ------------------ */
 
-
+//#region <------------------ FUNCTIONS ------------------>
 
 const sendWebsiteDataToDatabase = (data) => {
     return fetch(`http://localhost:5000/api/properties`, {
@@ -10,34 +9,24 @@ const sendWebsiteDataToDatabase = (data) => {
         headers: {"Content-type": "application/json; charset=UTF-8"}
         })
         .then(response => response.json()) 
-        .then(json => { console.log(json); return json.isSuccess})
+        .then(json => {return json.isSuccess})
         .catch(err => {console.log(err); return false });
 }
 
-const updateWebsiteDatabaseData = (data) => {
-    return fetch(`http://localhost:5000/api/properties`, {
-        method: "PUT",
-        body: JSON.stringify(data),
-        headers: {"Content-type": "application/json; charset=UTF-8"}
-        })
-        .then(response => response.json()) 
-        .then(json => { console.log(json); return true})
-        .catch(err => {console.log(err); return false });
-}
 
-const addWebsiteToUser = (websiteurl) => {
+ const addWebsiteToUser = (websiteurl) => {
     return fetch(`http://localhost:5000/api/userproperties`, {
         method: "POST",
         body: JSON.stringify({ websiteurl: websiteurl}),
         headers: {"Content-type": "application/json; charset=UTF-8"}
         })
         .then(response => response.json()) 
-        .then(json => { console.log(json); return true})
+        .then(json => {return true})
         .catch(err => {console.log(err); return false });
 }
 
 
-const getUserRatings = (websiteUrl) => {
+ const getUserRatings = (websiteUrl) => {
     return fetch(`http://localhost:5000/api/ratings/all`, {
         method: "POST",
         body: JSON.stringify({
@@ -47,23 +36,24 @@ const getUserRatings = (websiteUrl) => {
     })
         .then(response => response.json())
         .then(data=> {return data.data})
-        .catch(e=> {console.log('There has been an error getting user ratings'); return false})
+        .catch(e=> {console.log(e); return false})
 
 }
 
 
-const updateWebsiteData = (data) => {
+ const updateWebsiteData = (data) => {
     return fetch(`http://localhost:5000/api/properties`, {
         method: "PUT",
         body: JSON.stringify(data),
         headers: {"Content-type": "application/json; charset=UTF-8"}
         })
         .then(response => response.json()) 
-        .then(json => { console.log(json); return true})
+        .then(json => {return true})
         .catch(err => {console.log(err); return false });
 }
 
-const getWebsiteDataFromDatabase = (websiteUrl) => {
+
+ const getWebsiteDataFromDatabase = (websiteUrl) => {
     return fetch(`http://localhost:5000/api/properties/one`, {
         method: "POST",
         body: JSON.stringify({websiteurl: websiteUrl}),
@@ -71,70 +61,19 @@ const getWebsiteDataFromDatabase = (websiteUrl) => {
     })
         .then(response => response.json()) 
         .then(json => {return json.data})
-        .catch(err => {return false});
+        .catch(err => {console.log(err); return false});
 }
 
-const getWebsiteDataFromWebsite = (websiteUrl, tabId, callbackFunction) => {
+
+ const getWebsiteDataFromWebsite = (websiteUrl, tabId, callbackFunction) => {
     chrome.tabs.sendMessage(tabId, {
         message: 'getData',
         websiteurl: websiteUrl
     }, res=> callbackFunction(res))
 }
 
-const goToRatingPage = (websiteUrl, page) => {
 
-
-    if( page <= 4){
-        fetch(`http://localhost:5000/auth/user`)
-            .then(response => response.json()) 
-            .then(user => {
-    
-                const ratingOption = user[`ratingoption${page}`]
-                console.log(ratingOption)
-    
-                
-    
-                fetch(`http://localhost:5000/api/ratings`, {
-                    method: "POST",
-                    body: JSON.stringify({
-                        websiteurl: websiteUrl,
-                        ratingoption: ratingOption
-                    }),
-                    headers: {"Content-type": "application/json; charset=UTF-8"}
-                })
-                    .then(response => response.json()) 
-                    .then(data => {
-                         
-                        if (data.rating){
-                            goToRatingPage(websiteUrl, page + 1)
-                        }else{
-                            chrome.runtime.sendMessage({
-                               message: 'ratingPage',
-                               ratingoption: ratingOption,
-                               page: page
-                           })
-                        }
-    
-    
-                    })
-                    .catch(err => console.log('There has been an error getting user ratings'));
-            
-    
-            })
-            .catch(err => console.log('There has been an error getting user'));
-
-    }else{
-        goToSummaryPage(websiteUrl)
-    }
-}
-
-const goToErrorPage = () => {
-    chrome.runtime.sendMessage({
-        message: 'errorPage'
-    })
-}
-
-const addNoteToDatabase = (websiteUrl) => {
+ const addNoteToDatabase = (websiteUrl) => {
     chrome.runtime.sendMessage({
         message: 'getNote'
     }, (note)=>{
@@ -144,50 +83,16 @@ const addNoteToDatabase = (websiteUrl) => {
             headers: {"Content-type": "application/json; charset=UTF-8"}
         })
             .then(response => response.json()) 
-            .then(json => console.log(json))
-            .catch(err => console.log('ERROR - note not added'));
+            .then(() => console.log('Note added')) 
+            .catch(err => {
+                console.log(err)
+                console.log("Couldn't add the note")
+            });
     })
 }
 
 
-const goToSummaryPage = (websiteUrl) => {
-
-    getUserRatings(websiteUrl)
-        .then(data=> {
-            let ratings = []
-
-            data.forEach(rating=>{
-                ratings.push({
-                    ratingOption: rating.ratingoption,
-                    rating: rating.rating
-                })
-            })
-
-            chrome.runtime.sendMessage({
-                message: 'summaryPage',
-                ratings: ratings
-            })
-
-        })
-        // .catch(()=> {console.log('There has been an error getting ratings'); goToErrorPage()})
-
-    
-}
-
-const goToInactivePage = () => {
-    chrome.runtime.sendMessage({
-        message: 'inactivePage'
-    })
-}
-
-const injectForeground = (tabId, callbackFunction) => {
-    chrome.scripting.executeScript({
-        target: { tabId: tabId },
-        files: [`./foreground.js`]
-    }, callbackFunction())
-}
-
-const addRating = (websiteurl, ratingoption, rating) => {
+ const addRating = (websiteurl, ratingoption, rating) => {
     return fetch(`http://localhost:5000/api/ratings/add`, {
         method: "POST",
         body: JSON.stringify({
@@ -198,13 +103,12 @@ const addRating = (websiteurl, ratingoption, rating) => {
         headers: {"Content-type": "application/json; charset=UTF-8"}
         })
         .then(response => response.json()) 
-        .then(json => { console.log(json); return json})
-        .catch(err => {console.log('There has been an error adding rating'); return false });
+        .then(json => {return json})
+        .catch(err => {console.log(err); return false });
 }
 
 
-// CHECK IF IS PRODUCT PAGE
-const isProductPage = (url) => {
+ const isProductPage = (url) => {
     var isProductPage = false
     const pages = [
         "https://www.rightmove.co.uk/properties/",
@@ -221,7 +125,8 @@ const isProductPage = (url) => {
     return isProductPage
 }
 
-const objectValuesEqual = (object1, object2) => {
+
+ const objectValuesEqual = (object1, object2) => {
     var aValues = Object.values(object1)
     var bValues = Object.values(object2)
 
@@ -241,10 +146,107 @@ const objectValuesEqual = (object1, object2) => {
     return true;
 }
 
+//#endregion
 
 
-/* ------------------ LOGIC ------------------ */
 
+
+
+//#region <------------------ ROUTES ------------------>
+
+const goToRatingPage = (websiteUrl, page) => {
+
+    // IF PAGE < 4
+    if( page <= 4){
+        console.log("Go to rating page")
+        // GET USER DATA
+        fetch(`http://localhost:5000/auth/user`)
+            .then(response => response.json()) 
+            .then(user => {
+    
+                const ratingOption = user[`ratingoption${page}`]
+    
+                
+                // GET RATINGS
+                fetch(`http://localhost:5000/api/ratings`, {
+                    method: "POST",
+                    body: JSON.stringify({
+                        websiteurl: websiteUrl,
+                        ratingoption: ratingOption
+                    }),
+                    headers: {"Content-type": "application/json; charset=UTF-8"}
+                })
+                    .then(response => response.json()) 
+                    .then(data => {
+                         // IF RATED GO TO NEXT RATING OPTION
+                        if (data.rating){
+                            goToRatingPage(websiteUrl, page + 1)
+                        }else{
+                            chrome.runtime.sendMessage({
+                               message: 'ratingPage',
+                               ratingoption: ratingOption,
+                               page: page
+                           })
+                        }
+    
+    
+                    })
+                    .catch(err => console.log("ERROR - Couldn't get user ratings"));
+            
+    
+            })
+            .catch(err => console.log("ERROR - Couldn't get user data"));
+
+    }else{
+        goToSummaryPage(websiteUrl)
+    }
+}
+
+const goToErrorPage = () => {
+    chrome.runtime.sendMessage({
+        message: 'errorPage'
+    })
+}
+
+
+const goToSummaryPage = (websiteUrl) => {
+    console.log("Go to summary page")
+
+    getUserRatings(websiteUrl)
+        .then(data=> {
+            let ratings = []
+
+            data.forEach(rating=>{
+                ratings.push({
+                    ratingOption: rating.ratingoption,
+                    rating: rating.rating
+                })
+            })
+
+            chrome.runtime.sendMessage({
+                message: 'summaryPage',
+                ratings: ratings
+            })
+
+        })
+        .catch(()=> {console.log("ERROR - Couldn't get user ratings"); goToErrorPage()})
+
+    
+}
+
+const goToInactivePage = () => {
+    chrome.runtime.sendMessage({
+        message: 'inactivePage'
+    })
+}
+
+//#endregion
+
+
+
+
+
+//#region <------------------ LOGIC ------------------>
 
 // ON CHANGE TAB
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
@@ -257,7 +259,7 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
         chrome.scripting.executeScript({
             target: { tabId: tabId },
             files: [`./foreground.js`]
-        })
+        }, () => console.log('Script injected'))
 
     }
     return true;
@@ -288,6 +290,7 @@ chrome.runtime.onMessage.addListener((req, sender, sendRes)=>{
                             .then(data => {
                                 // IF YES:
                                 if (data){
+                                    console.log('Website is already in the database')
                                     const dataFromWebsite = res.data
                                     let { dateadded, dateupdated, note, id, ...dataFromDatabase } = data
             
@@ -296,9 +299,13 @@ chrome.runtime.onMessage.addListener((req, sender, sendRes)=>{
                                         console.log('Website data is up to date!')
                                     }else{
                                         // IF YES, UPDATE DATA IN DATABASE
+                                        console.log('Website data is not up to date')
                                         updateWebsiteData(dataFromWebsite)
                                             .then(()=> console.log('Website data updated!'))
-                                            .catch(()=> goToErrorPage())
+                                            .catch(()=> {
+                                                console.log("ERROR - Couldn't update website data")
+                                                goToErrorPage()
+                                            })
                                     }
 
                                     // CHECK IF USER HAS PROPERTY
@@ -307,6 +314,7 @@ chrome.runtime.onMessage.addListener((req, sender, sendRes)=>{
 
                                             // IF YES:
                                             if (userRatings.length){
+                                                console.log('User has rated the property')
                                                 // userRatings.forEach((rating, i)=>{
                                                 //     if(!rating.rating){// -->> ODE NESTO NE VALJA
                                                 //         goToRatingPage(websiteUrl, i)
@@ -317,9 +325,17 @@ chrome.runtime.onMessage.addListener((req, sender, sendRes)=>{
                                                 goToSummaryPage(websiteUrl)
                                             // IF NO:
                                             }else{
+                                                console.log("User hasn't rated the property")
                                                 addWebsiteToUser(websiteUrl)
-                                                    .then(()=>goToRatingPage(websiteUrl, 1))
-                                                    .catch(()=>goToErrorPage(websiteUrl, 1))
+                                                    .then(()=>{
+                                                        console.log('Property assigned to user')
+                                                        goToRatingPage(websiteUrl, 1)
+                                                        
+                                                    })
+                                                    .catch(()=>{
+                                                        console.log("ERROR - Couldn't assign property to user")
+                                                        goToErrorPage(websiteUrl, 1)
+                                                    })
                                             }
                                         })
 
@@ -328,19 +344,32 @@ chrome.runtime.onMessage.addListener((req, sender, sendRes)=>{
                                 }
                                 // IF NO:
                                 else{
+                                    console.log('Website is not in the database')
                                     // SEND WEBSITE DATA TO DATABASE
                                     sendWebsiteDataToDatabase(res.data)
                                         .then(isSuccess => {
                                             if (isSuccess){
+                                                console.log('Property added to database')
                                                 // CONNECT USER TO PROPERTY
                                                 addWebsiteToUser(websiteUrl)
-                                                    .then(()=> goToRatingPage(websiteUrl, 1))
-                                                    .catch(()=> goToErrorPage())
+                                                    .then(()=>{
+                                                        console.log('Property assigned to user')
+                                                        goToRatingPage(websiteUrl, 1)
+                                                        
+                                                    })
+                                                    .catch(()=>{
+                                                        console.log("ERROR - Couldn't assign property to user")
+                                                        goToErrorPage(websiteUrl, 1)
+                                                    })
                                             }else{
+                                                console.log("ERROR - Couldn't add property data to database")
                                                 goToErrorPage()
                                             }
                                         })
-                                        .catch(()=> goToErrorPage())
+                                        .catch(()=> {
+                                            console.log("ERROR - Couldn't add property data to database")
+                                            goToErrorPage()
+                                        })
                         
                                 }
                             })
@@ -350,6 +379,7 @@ chrome.runtime.onMessage.addListener((req, sender, sendRes)=>{
                 })
             }
             else{
+                console.log("This isn't a property website")
                 goToInactivePage()
             }
        
@@ -384,28 +414,17 @@ chrome.runtime.onMessage.addListener((req, sender, sendRes)=>{
 
                 addRating(websiteUrl, ratingoption, rating)
                     .then((ret)=>{
-                        ret.isSuccess ?
+                        if (ret.isSuccess){
+                            console.log("Rating added");
                             goToRatingPage(websiteUrl, parseInt(currentPage) + 1)
-                        :
-                            console.log('There has been an error adding rating')
+                        }else{
+                            console.log("ERROR - Couldn't add the rating")
+                        }
                     })
-                    .catch(()=>console.log('There has been an error adding rating'))
+                    .catch(()=>console.log("ERROR - Couldn't add the rating"))
 
             });
           });
-
-
-        
-        // add rating to database
-        // fetch(`http://localhost:5000/api/ratings`, {
-        //     method: "POST",
-        //     body: JSON.stringify(req.data),
-        //     headers: {"Content-type": "application/json; charset=UTF-8"}
-        //     })
-        //     .then(response => response.json()) 
-        //     .then(json => console.log(json))
-        //     .catch(err => console.log(err));
-
 
       
         
@@ -414,3 +433,6 @@ chrome.runtime.onMessage.addListener((req, sender, sendRes)=>{
     }
     return true;
 })
+
+//#endregion
+

@@ -40,6 +40,27 @@ const sendWebsiteDataToDatabase = (data) => {
 
 }
 
+const getUserProperty = (websiteUrl) => {
+    return fetch(`http://localhost:5000/api/userproperties/one`, {
+        method: "POST",
+        body: JSON.stringify({
+            websiteurl: websiteUrl
+        }),
+        headers: {"Content-type": "application/json; charset=UTF-8"}
+    })
+        .then(response => response.json())
+        .then(data=> {return data.data})
+        .catch(e=> {console.log(e); return false})
+
+}
+
+const getUserRatingOptions = () => {
+    return fetch(`http://localhost:5000/api/user/ratingoptions`)
+        .then(response => response.json())
+        .then(data=> {return data.data})
+        .catch(e=> {console.log(e); return false})
+
+}
 
  const updateWebsiteData = (data) => {
     return fetch(`http://localhost:5000/api/properties`, {
@@ -107,6 +128,21 @@ const sendWebsiteDataToDatabase = (data) => {
         .catch(err => {console.log(err); return false });
 }
 
+const updateRating = (websiteurl, ratingoption, rating) => {
+    return fetch(`http://localhost:5000/api/ratings`, {
+        method: "PUT",
+        body: JSON.stringify({
+            websiteurl: websiteurl,
+            ratingoption: ratingoption,
+            rating: rating
+        }),
+        headers: {"Content-type": "application/json; charset=UTF-8"}
+        })
+        .then(response => response.json()) 
+        .then(json => {return json})
+        .catch(err => {console.log(err); return false });
+}
+
 
  const isProductPage = (url) => {
     var isProductPage = false
@@ -145,6 +181,16 @@ const sendWebsiteDataToDatabase = (data) => {
 
     return true;
 }
+
+const addUnratedRatings = (ratingOptions, websiteUrl) => {
+    Object.values(ratingOptions).forEach(ratingOption =>{
+        console.log(ratingOption)
+        addRating(websiteUrl, ratingOption, 'Unrated')
+            .then(d => console.log('Unrated rating added'))
+            .catch(d => console.log("ERROR - Couldn't add unrated rating"))
+    })
+}
+
 
 //#endregion
 
@@ -279,6 +325,7 @@ chrome.runtime.onMessage.addListener((req, sender, sendRes)=>{
             const websiteUrl = tabs[0].url
 
             if (isProductPage(websiteUrl)){
+
             
 
                 // GET WEBSITE DATA
@@ -309,27 +356,46 @@ chrome.runtime.onMessage.addListener((req, sender, sendRes)=>{
                                     }
 
                                     // CHECK IF USER HAS PROPERTY
-                                    getUserRatings(websiteUrl)
-                                        .then(userRatings=>{
+                                    getUserProperty(websiteUrl)
+                                        .then(userProperty=>{
 
                                             // IF YES:
-                                            if (userRatings.length){
-                                                console.log('User has rated the property')
-                                                // userRatings.forEach((rating, i)=>{
-                                                //     if(!rating.rating){// -->> ODE NESTO NE VALJA
-                                                //         goToRatingPage(websiteUrl, i)
-                                                //     }else{
-                                                //         goToSummaryPage(websiteUrl)
-                                                //     }
-                                                // })
-                                                goToSummaryPage(websiteUrl)
+                                            if (userProperty){
+                                                console.log('User was already assigned the property')
+                                                
+                                                getUserRatings(websiteUrl)
+                                                    .then(userRatings =>{
+                                                        console.log(userRatings)
+
+                                                        let unratedNumbers = 0
+
+                                                        userRatings.forEach(userRating => {
+                                                            if (userRating.rating === 'Unrated'){
+                                                                unratedNumbers++
+                                                            }
+                                                        })
+
+                                                        if (unratedNumbers < 4){
+                                                            goToSummaryPage(websiteUrl)
+                                                            
+                                                        }else{
+                                                            goToRatingPage(websiteUrl, 1)
+                                                            sendRes('openNote')
+                                                        }
+                                                    })
+                                                
                                             // IF NO:
                                             }else{
-                                                console.log("User hasn't rated the property")
+                                                console.log("User wasn't already assigned the property")
                                                 addWebsiteToUser(websiteUrl)
                                                     .then(()=>{
-                                                        console.log('Property assigned to user')
-                                                        goToRatingPage(websiteUrl, 1)
+                                                        getUserRatingOptions()
+                                                            .then(ratingOptions => {
+                                                                addUnratedRatings(ratingOptions, websiteUrl)
+                                                                goToRatingPage(websiteUrl, 1)
+                                                                sendRes('openNote')
+                                                            })
+                                                            .catch(()=> console.log("ERROR - Couldn't get rating options"))
                                                         
                                                     })
                                                     .catch(()=>{
@@ -354,7 +420,13 @@ chrome.runtime.onMessage.addListener((req, sender, sendRes)=>{
                                                 addWebsiteToUser(websiteUrl)
                                                     .then(()=>{
                                                         console.log('Property assigned to user')
-                                                        goToRatingPage(websiteUrl, 1)
+                                                        getUserRatingOptions()
+                                                        .then(ratingOptions => {
+                                                            addUnratedRatings(ratingOptions, websiteUrl)
+                                                            goToRatingPage(websiteUrl, 1)
+                                                            sendRes('openNote')
+                                                        })
+                                                        .catch(()=> console.log("ERROR - Couldn't get rating options"))
                                                         
                                                     })
                                                     .catch(()=>{
@@ -375,6 +447,7 @@ chrome.runtime.onMessage.addListener((req, sender, sendRes)=>{
                             })
                     }else{
                         console.log("ERROR - couldn't get website data")
+                        goToErrorPage()
                     }
                 })
             }
@@ -412,7 +485,7 @@ chrome.runtime.onMessage.addListener((req, sender, sendRes)=>{
                 addNoteToDatabase(websiteUrl)
 
 
-                addRating(websiteUrl, ratingoption, rating)
+                updateRating(websiteUrl, ratingoption, rating)
                     .then((ret)=>{
                         if (ret.isSuccess){
                             console.log("Rating added");
@@ -422,6 +495,33 @@ chrome.runtime.onMessage.addListener((req, sender, sendRes)=>{
                         }
                     })
                     .catch(()=>console.log("ERROR - Couldn't add the rating"))
+
+            });
+          });
+
+      
+        
+        
+        
+    }
+    return true;
+})
+
+// ON SKIP PAGE
+chrome.runtime.onMessage.addListener((req, sender, sendRes)=>{
+    if (req.message === 'skipPage'){
+
+
+        chrome.windows.getCurrent(w => {
+            chrome.tabs.query({active: true, windowId: w.id}, tabs => {
+                const websiteUrl = tabs[0].url
+                const currentPage = req.currentPage
+
+                console.log('Skip page')
+                addNoteToDatabase(websiteUrl)
+
+
+                goToRatingPage(websiteUrl, parseInt(currentPage) + 1)
 
             });
           });

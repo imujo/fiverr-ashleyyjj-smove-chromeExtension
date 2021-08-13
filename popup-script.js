@@ -1,5 +1,10 @@
 chrome.runtime.sendMessage({
     message: 'popupOpened'
+}, res => {
+    if (res === 'openNote'){
+        const note = document.querySelector('.note')
+        note.innerHTML = `<quick-note></quick-note>`
+    }
 })
 
 
@@ -41,11 +46,7 @@ chrome.runtime.onMessage.addListener((req, sender, sendRes)=>{
 chrome.runtime.onMessage.addListener((req, sender, sendRes)=>{
     if (req.message === 'errorPage'){
         const content = document.getElementById('content')
-        content.innerHTML = `<h1> There has been an error </h1>`
-        const note = document.querySelector('.note')
-        if (note){
-            note.remove()
-        }
+        content.innerHTML = `<error-page></error-page>`
     }
     return true;
 })
@@ -54,11 +55,8 @@ chrome.runtime.onMessage.addListener((req, sender, sendRes)=>{
 chrome.runtime.onMessage.addListener((req, sender, sendRes)=>{
     if (req.message === 'inactivePage'){
         const content = document.getElementById('content')
-        content.innerHTML = `<h1> Inactive page </h1>`
-        const note = document.querySelector('.note')
-        if (note){
-            note.remove()
-        }
+        content.innerHTML = `<inactive-page></inactive-page>`
+
     }
     return true;
 })
@@ -75,7 +73,8 @@ chrome.runtime.onMessage.addListener((req, sender, sendRes)=>{
     return true;
 })
 
-
+const content = document.getElementById('content')
+        content.innerHTML = `<error-page></error-page>`
 
 // Close
 document.getElementById('close').addEventListener('click', ()=>{

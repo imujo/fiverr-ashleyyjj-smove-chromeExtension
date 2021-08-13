@@ -94,13 +94,8 @@ class Content extends HTMLElement {
     
         skip.addEventListener('click', ()=>{
             chrome.runtime.sendMessage({
-                message: 'nextPage',
-                currentPage: currentPage,
-                data: {
-                    ratingoption: title,
-                    rating: undefined
-                }
-                
+                message: 'skipPage',
+                currentPage: currentPage              
             })
         })    
 

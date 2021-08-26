@@ -1,3 +1,13 @@
+const onlyNumbers = (value) => {
+    let numberValue = ''
+    for (let i=0; i <= value.length; i++){
+        const isNumber = ['0','1','2','3','4','5','6','7','8','9'].includes(value[i])
+        if (isNumber){
+            numberValue += value[i]
+        }
+    }
+    return numberValue
+}
 
 // SELECTING EACH WEBSITES DATA
 const getWebsiteData = (website) => {
@@ -60,7 +70,7 @@ const getWebsiteData = (website) => {
 
     const data = {
         address: address,
-        price: price,
+        price: onlyNumbers(price),
         imageurl: imageUrl,
         bedrooms: bedrooms,
         bathrooms: bathrooms

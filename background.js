@@ -134,7 +134,7 @@ const updateRating = (websiteurl, ratingoption, rating) => {
         body: JSON.stringify({
             websiteurl: websiteurl,
             ratingoption: ratingoption,
-            rating: rating
+            newrating: rating
         }),
         headers: {"Content-type": "application/json; charset=UTF-8"}
         })
@@ -143,6 +143,18 @@ const updateRating = (websiteurl, ratingoption, rating) => {
         .catch(err => {console.log(err); return false });
 }
 
+const updateDashboardLocation = (websiteurl, dashboardlocation) => {
+    return fetch(`http://localhost:5000/api/userproperties/dashboardlocation`, {
+        method: "PUT",
+        body: JSON.stringify({
+            websiteurl: websiteurl,
+            dashboardlocation: dashboardlocation
+        }),
+        headers: {"Content-type": "application/json; charset=UTF-8"}
+        })
+        .then(json => {return json})
+        .catch(err => {console.log(err); return false });
+}
 
  const isProductPage = (url) => {
     var isProductPage = false
@@ -206,12 +218,13 @@ const goToRatingPage = (websiteUrl, page) => {
     if( page <= 4){
         console.log("Go to rating page")
         // GET USER DATA
-        fetch(`http://localhost:5000/auth/user`)
+        fetch(`http://localhost:5000/api/user/ratingoptions`)
             .then(response => response.json()) 
             .then(user => {
+                console.log(user, 'user')
     
-                const ratingOption = user[`ratingoption${page}`]
-    
+                const ratingOption = user.data[`ratingoption${page}`]
+                console.log(ratingOption)
                 
                 // GET RATINGS
                 fetch(`http://localhost:5000/api/ratings`, {
@@ -241,7 +254,7 @@ const goToRatingPage = (websiteUrl, page) => {
             
     
             })
-            .catch(err => console.log("ERROR - Couldn't get user data"));
+            .catch(err => console.log("ERROR - Couldn't get rating options"));
 
     }else{
         goToSummaryPage(websiteUrl)
@@ -261,13 +274,29 @@ const goToSummaryPage = (websiteUrl) => {
     getUserRatings(websiteUrl)
         .then(data=> {
             let ratings = []
+            let unratedExists = false
 
             data.forEach(rating=>{
+                if (rating.rating === 'Unrated'){
+                    unratedExists = true
+                }
+
                 ratings.push({
                     ratingOption: rating.ratingoption,
                     rating: rating.rating
                 })
             })
+
+            if (!unratedExists){
+                getUserProperty(websiteUrl)
+                    .then(userProperty=>{
+                        if (userProperty.dashboardlocation === 'unrated'){
+                            updateDashboardLocation(websiteUrl, 'top')
+                                .catch(e=> console.log("ERROR - Couldn't update dashboard location"))
+                        }
+                    })
+                    .catch(e=> console.log("ERROR - Couldn't get user property"))
+            }
 
             chrome.runtime.sendMessage({
                 message: 'summaryPage',

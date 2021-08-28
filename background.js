@@ -2,11 +2,14 @@
 
 //#region <------------------ FUNCTIONS ------------------>
 
-const sendWebsiteDataToDatabase = (data) => {
+const sendWebsiteDataToDatabase = (data, jwtToken) => {
     return fetch(`http://localhost:5000/api/properties`, {
         method: "POST",
         body: JSON.stringify(data),
-        headers: {"Content-type": "application/json; charset=UTF-8"}
+        headers: {
+            "Content-type": "application/json; charset=UTF-8",
+            "Authorization": jwtToken
+        }
         })
         .then(response => response.json()) 
         .then(json => {return json.isSuccess})
@@ -14,11 +17,14 @@ const sendWebsiteDataToDatabase = (data) => {
 }
 
 
- const addWebsiteToUser = (websiteurl) => {
+ const addWebsiteToUser = (websiteurl, jwtToken) => {
     return fetch(`http://localhost:5000/api/userproperties`, {
         method: "POST",
         body: JSON.stringify({ websiteurl: websiteurl}),
-        headers: {"Content-type": "application/json; charset=UTF-8"}
+        headers: {
+            "Content-type": "application/json; charset=UTF-8",
+            "Authorization": jwtToken
+        }
         })
         .then(response => response.json()) 
         .then(json => {return true})
@@ -26,27 +32,33 @@ const sendWebsiteDataToDatabase = (data) => {
 }
 
 
- const getUserRatings = (websiteUrl) => {
+ const getUserRatings = (websiteUrl, jwtToken) => {
     return fetch(`http://localhost:5000/api/ratings/all`, {
         method: "POST",
         body: JSON.stringify({
             websiteurl: websiteUrl
         }),
-        headers: {"Content-type": "application/json; charset=UTF-8"}
+        headers: {
+            "Content-type": "application/json; charset=UTF-8",
+            "Authorization": jwtToken
+        }
     })
         .then(response => response.json())
-        .then(data=> {return data.data})
+        .then(data=> {console.log(data); return data.data})
         .catch(e=> {console.log(e); return false})
 
 }
 
-const getUserProperty = (websiteUrl) => {
+const getUserProperty = (websiteUrl, jwtToken) => {
     return fetch(`http://localhost:5000/api/userproperties/one`, {
         method: "POST",
         body: JSON.stringify({
             websiteurl: websiteUrl
         }),
-        headers: {"Content-type": "application/json; charset=UTF-8"}
+        headers: {
+            "Content-type": "application/json; charset=UTF-8",
+            "Authorization": jwtToken
+        }
     })
         .then(response => response.json())
         .then(data=> {return data.data})
@@ -54,19 +66,28 @@ const getUserProperty = (websiteUrl) => {
 
 }
 
-const getUserRatingOptions = () => {
-    return fetch(`http://localhost:5000/api/user/ratingoptions`)
+const getUserRatingOptions = (jwtToken) => {
+    return fetch(`http://localhost:5000/api/user/ratingoptions`, {
+        method: "GET",
+        headers: {
+            "Content-type": "application/json; charset=UTF-8",
+            "Authorization": jwtToken
+        }
+    })
         .then(response => response.json())
         .then(data=> {return data.data})
         .catch(e=> {console.log(e); return false})
 
 }
 
- const updateWebsiteData = (data) => {
+ const updateWebsiteData = (data, jwtToken) => {
     return fetch(`http://localhost:5000/api/properties`, {
         method: "PUT",
         body: JSON.stringify(data),
-        headers: {"Content-type": "application/json; charset=UTF-8"}
+        headers: {
+            "Content-type": "application/json; charset=UTF-8",
+            "Authorization": jwtToken
+        }
         })
         .then(response => response.json()) 
         .then(json => {return true})
@@ -74,11 +95,14 @@ const getUserRatingOptions = () => {
 }
 
 
- const getWebsiteDataFromDatabase = (websiteUrl) => {
+ const getWebsiteDataFromDatabase = (websiteUrl, jwtToken) => {
     return fetch(`http://localhost:5000/api/properties/one`, {
         method: "POST",
         body: JSON.stringify({websiteurl: websiteUrl}),
-        headers: {"Content-type": "application/json; charset=UTF-8"}
+        headers: {
+            "Content-type": "application/json; charset=UTF-8",
+            "Authorization": jwtToken
+        }
     })
         .then(response => response.json()) 
         .then(json => {return json.data})
@@ -94,14 +118,18 @@ const getUserRatingOptions = () => {
 }
 
 
- const addNoteToDatabase = (websiteUrl) => {
+ const addNoteToDatabase = (websiteUrl, jwtToken) => {
     chrome.runtime.sendMessage({
         message: 'getNote'
     }, (note)=>{
+
         fetch(`http://localhost:5000/api/userproperties/note`, {
             method: "PUT",
             body: JSON.stringify({ note: note, websiteurl: websiteUrl}),
-            headers: {"Content-type": "application/json; charset=UTF-8"}
+            headers: {
+                "Content-type": "application/json; charset=UTF-8",
+                "Authorization": jwtToken
+            }
         })
             .then(response => response.json()) 
             .then(() => console.log('Note added')) 
@@ -113,7 +141,7 @@ const getUserRatingOptions = () => {
 }
 
 
- const addRating = (websiteurl, ratingoption, rating) => {
+ const addRating = (websiteurl, ratingoption, rating, jwtToken) => {
     return fetch(`http://localhost:5000/api/ratings/add`, {
         method: "POST",
         body: JSON.stringify({
@@ -121,14 +149,17 @@ const getUserRatingOptions = () => {
             ratingoption: ratingoption,
             rating: rating
         }),
-        headers: {"Content-type": "application/json; charset=UTF-8"}
+        headers: {
+            "Content-type": "application/json; charset=UTF-8",
+            "Authorization": jwtToken
+        }
         })
         .then(response => response.json()) 
         .then(json => {return json})
         .catch(err => {console.log(err); return false });
 }
 
-const updateRating = (websiteurl, ratingoption, rating) => {
+const updateRating = (websiteurl, ratingoption, rating, jwtToken) => {
     return fetch(`http://localhost:5000/api/ratings`, {
         method: "PUT",
         body: JSON.stringify({
@@ -136,21 +167,27 @@ const updateRating = (websiteurl, ratingoption, rating) => {
             ratingoption: ratingoption,
             newrating: rating
         }),
-        headers: {"Content-type": "application/json; charset=UTF-8"}
+        headers: {
+            "Content-type": "application/json; charset=UTF-8",
+            "Authorization": jwtToken
+        }
         })
         .then(response => response.json()) 
         .then(json => {return json})
         .catch(err => {console.log(err); return false });
 }
 
-const updateDashboardLocation = (websiteurl, dashboardlocation) => {
+const updateDashboardLocation = (websiteurl, dashboardlocation, jwtToken) => {
     return fetch(`http://localhost:5000/api/userproperties/dashboardlocation`, {
         method: "PUT",
         body: JSON.stringify({
             websiteurl: websiteurl,
             dashboardlocation: dashboardlocation
         }),
-        headers: {"Content-type": "application/json; charset=UTF-8"}
+        headers: {
+            "Content-type": "application/json; charset=UTF-8",
+            "Authorization": jwtToken
+        }
         })
         .then(json => {return json})
         .catch(err => {console.log(err); return false });
@@ -194,13 +231,29 @@ const updateDashboardLocation = (websiteurl, dashboardlocation) => {
     return true;
 }
 
-const addUnratedRatings = (ratingOptions, websiteUrl) => {
+const addUnratedRatings = (ratingOptions, websiteUrl, jwtToken) => {
     Object.values(ratingOptions).forEach(ratingOption =>{
         console.log(ratingOption)
-        addRating(websiteUrl, ratingOption, 'Unrated')
+        addRating(websiteUrl, ratingOption, 'Unrated', jwtToken)
             .then(d => console.log('Unrated rating added'))
             .catch(d => console.log("ERROR - Couldn't add unrated rating"))
     })
+}
+
+const logIn = (email, password) => {
+    return fetch(`http://localhost:5000/auth/login`, {
+        method: "POST",
+        body: JSON.stringify({
+            email: email,
+            password: password
+        }),
+        headers: {
+            "Content-type": "application/json; charset=UTF-8",
+        }
+        })
+        .then(response => response.json()) 
+        .then(json => {return json})
+        .catch(err => {console.log(err); return false });
 }
 
 
@@ -212,19 +265,24 @@ const addUnratedRatings = (ratingOptions, websiteUrl) => {
 
 //#region <------------------ ROUTES ------------------>
 
-const goToRatingPage = (websiteUrl, page) => {
+const goToRatingPage = (websiteUrl, page, jwtToken) => {
 
     // IF PAGE < 4
     if( page <= 4){
         console.log("Go to rating page")
         // GET USER DATA
-        fetch(`http://localhost:5000/api/user/ratingoptions`)
+
+        fetch(`http://localhost:5000/api/user/ratingoptions`, {
+            method: "GET",
+            headers: {
+                "Content-type": "application/json; charset=UTF-8",
+                "Authorization": jwtToken
+            }
+        })
             .then(response => response.json()) 
             .then(user => {
-                console.log(user, 'user')
     
                 const ratingOption = user.data[`ratingoption${page}`]
-                console.log(ratingOption)
                 
                 // GET RATINGS
                 fetch(`http://localhost:5000/api/ratings`, {
@@ -233,7 +291,10 @@ const goToRatingPage = (websiteUrl, page) => {
                         websiteurl: websiteUrl,
                         ratingoption: ratingOption
                     }),
-                    headers: {"Content-type": "application/json; charset=UTF-8"}
+                    headers: {
+                        "Content-type": "application/json; charset=UTF-8",
+                        "Authorization": jwtToken
+                    }
                 })
                     .then(response => response.json()) 
                     .then(data => {
@@ -257,7 +318,7 @@ const goToRatingPage = (websiteUrl, page) => {
             .catch(err => console.log("ERROR - Couldn't get rating options"));
 
     }else{
-        goToSummaryPage(websiteUrl)
+        goToSummaryPage(websiteUrl, jwtToken)
     }
 }
 
@@ -268,10 +329,10 @@ const goToErrorPage = () => {
 }
 
 
-const goToSummaryPage = (websiteUrl) => {
+const goToSummaryPage = (websiteUrl, jwtToken) => {
     console.log("Go to summary page")
 
-    getUserRatings(websiteUrl)
+    getUserRatings(websiteUrl, jwtToken)
         .then(data=> {
             let ratings = []
             let unratedExists = false
@@ -287,11 +348,13 @@ const goToSummaryPage = (websiteUrl) => {
                 })
             })
 
+
             if (!unratedExists){
-                getUserProperty(websiteUrl)
+                getUserProperty(websiteUrl, jwtToken)
                     .then(userProperty=>{
                         if (userProperty.dashboardlocation === 'unrated'){
-                            updateDashboardLocation(websiteUrl, 'top')
+                            console.log('change dashboard locaton')
+                            updateDashboardLocation(websiteUrl, 'top', jwtToken)
                                 .catch(e=> console.log("ERROR - Couldn't update dashboard location"))
                         }
                     })
@@ -310,8 +373,16 @@ const goToSummaryPage = (websiteUrl) => {
 }
 
 const goToInactivePage = () => {
+    console.log("This isn't a property website")
     chrome.runtime.sendMessage({
         message: 'inactivePage'
+    })
+}
+
+const goToLoginPage = () => {
+    console.log("Login page")
+    chrome.runtime.sendMessage({
+        message: 'loginPage'
     })
 }
 
@@ -322,6 +393,66 @@ const goToInactivePage = () => {
 
 
 //#region <------------------ LOGIC ------------------>
+
+
+
+
+// ON LOGIN
+chrome.runtime.onMessage.addListener((req, sender, sendRes)=>{
+    if (req.message === 'login'){
+        const { email, password } = req.data
+
+        chrome.windows.getCurrent(w => {
+            chrome.tabs.query({active: true, windowId: w.id}, tabs => {
+                
+                const websiteUrl = tabs[0].url
+    
+                // Get jwtToken
+                chrome.storage.local.get('jwtToken', storage => {
+                    const jwtToken = storage.jwtToken
+                    
+                    // log in
+                    logIn(email, password)
+                        .then(data => {
+    
+                            // if succesfull
+                            if (data.isSuccess){
+                                console.log('Logged in')
+            
+                                // set local storage
+                                chrome.storage.local.set({isAuth: true}, ()=> console.log('Auth status set!'))
+                                chrome.storage.local.set({jwtToken: data.token}, ()=> console.log('Jwt token set!'))
+            
+                                // if product page 
+                                if (isProductPage(websiteUrl)){
+                                    goToRatingPage(websiteUrl, 1, jwtToken)
+                                }else{
+                                    
+                                    goToInactivePage()
+                                }
+    
+                            }else{
+                                console.log("ERROR - Couldn't log in user")
+                                chrome.runtime.sendMessage({
+                                    message: 'loginError',
+                                    errorMsg: data.msg         
+                                })
+                            }
+                        })
+                        .catch(e => console.log("ERROR - Couldn't log in user"))
+                })
+    
+    
+                
+            })
+        })
+        
+        
+    }
+    return true;
+})
+
+
 
 // ON CHANGE TAB
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
@@ -342,152 +473,168 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 
 
 
-
 // ON CLICK POPUP
 chrome.runtime.onMessage.addListener((req, sender, sendRes)=>{
 
     if (req.message === 'popupOpened'){
 
         // GET INFO ABOUT TAB
-        chrome.tabs.query({active: true, currentWindow: true}, tabs => {
-            const tabId = tabs[0].id
-            const websiteUrl = tabs[0].url
-
-            if (isProductPage(websiteUrl)){
-
+        chrome.windows.getCurrent(w => {
+            chrome.tabs.query({active: true, windowId: w.id}, tabs => {
+                const tabId = tabs[0].id
+                const websiteUrl = tabs[0].url
+    
+                chrome.storage.local.get(['isAuth', 'jwtToken'], (data)=>{
+                    const jwtToken = data.jwtToken
+    
+                    if (data.isAuth){
+                        console.log('Authenticated')
+                        
+                        if (isProductPage(websiteUrl)){
+    
+                
+    
+                            // GET WEBSITE DATA
+                            getWebsiteDataFromWebsite(websiteUrl, tabId, (res)=>{
+                                if (res.message = 'success'){
             
-
-                // GET WEBSITE DATA
-                getWebsiteDataFromWebsite(websiteUrl, tabId, (res)=>{
-                    if (res.message = 'success'){
-
-                        // CHECK IF THE PROPERTY IS ALREADY ADDED
-                        getWebsiteDataFromDatabase(websiteUrl)
-                            .then(data => {
-                                // IF YES:
-                                if (data){
-                                    console.log('Website is already in the database')
-                                    const dataFromWebsite = res.data
-                                    let { dateadded, dateupdated, note, id, ...dataFromDatabase } = data
-            
-                                    // CHECK IF ANY DATA CHANGED
-                                    if (objectValuesEqual(dataFromDatabase, dataFromWebsite)){
-                                        console.log('Website data is up to date!')
-                                    }else{
-                                        // IF YES, UPDATE DATA IN DATABASE
-                                        console.log('Website data is not up to date')
-                                        updateWebsiteData(dataFromWebsite)
-                                            .then(()=> console.log('Website data updated!'))
-                                            .catch(()=> {
-                                                console.log("ERROR - Couldn't update website data")
-                                                goToErrorPage()
-                                            })
-                                    }
-
-                                    // CHECK IF USER HAS PROPERTY
-                                    getUserProperty(websiteUrl)
-                                        .then(userProperty=>{
-
+                                    // CHECK IF THE PROPERTY IS ALREADY ADDED
+                                    getWebsiteDataFromDatabase(websiteUrl, jwtToken)
+                                        .then(data => {
                                             // IF YES:
-                                            if (userProperty){
-                                                console.log('User was already assigned the property')
-                                                
-                                                getUserRatings(websiteUrl)
-                                                    .then(userRatings =>{
-                                                        console.log(userRatings)
-
-                                                        let unratedNumbers = 0
-
-                                                        userRatings.forEach(userRating => {
-                                                            if (userRating.rating === 'Unrated'){
-                                                                unratedNumbers++
-                                                            }
+                                            if (data){
+                                                console.log('Website is already in the database')
+                                                const dataFromWebsite = res.data
+                                                let { dateadded, dateupdated, note, id, ...dataFromDatabase } = data
+                        
+                                                // CHECK IF ANY DATA CHANGED
+                                                if (objectValuesEqual(dataFromDatabase, dataFromWebsite)){
+                                                    console.log('Website data is up to date!')
+                                                }else{
+                                                    // IF YES, UPDATE DATA IN DATABASE
+                                                    console.log('Website data is not up to date')
+                                                    updateWebsiteData(dataFromWebsite, jwtToken)
+                                                        .then(()=> console.log('Website data updated!'))
+                                                        .catch(()=> {
+                                                            console.log("ERROR - Couldn't update website data")
+                                                            goToErrorPage()
                                                         })
-
-                                                        if (unratedNumbers < 4){
-                                                            goToSummaryPage(websiteUrl)
+                                                }
+            
+                                                // CHECK IF USER HAS PROPERTY
+                                                getUserProperty(websiteUrl, jwtToken)
+                                                    .then(userProperty=>{
+            
+                                                        // IF YES:
+                                                        if (userProperty){
+                                                            console.log('User was already assigned the property')
                                                             
+                                                            getUserRatings(websiteUrl, jwtToken)
+                                                                .then(userRatings =>{
+                                                                    console.log(userRatings)
+
+                                                                
+                                                                    let unratedNumbers = 0
+            
+                                                                    userRatings.forEach(userRating => {
+                                                                        if (userRating.rating === 'Unrated'){
+                                                                            unratedNumbers++
+                                                                        }
+                                                                    })
+            
+                                                                    if (unratedNumbers < 4){
+                                                                        goToSummaryPage(websiteUrl, jwtToken)
+                                                                        
+                                                                    }else{
+                                                                        goToRatingPage(websiteUrl, 1, jwtToken)
+                                                                        sendRes('openNote')
+                                                                    }
+                                                                })
+
+                                                            
+                                                        // IF NO:
                                                         }else{
-                                                            goToRatingPage(websiteUrl, 1)
-                                                            sendRes('openNote')
+                                                            console.log("User wasn't already assigned the property")
+                                                            addWebsiteToUser(websiteUrl, jwtToken)
+                                                                .then(()=>{
+                                                                    getUserRatingOptions(jwtToken)
+                                                                        .then(ratingOptions => {
+                                                                            addUnratedRatings(ratingOptions, websiteUrl, jwtToken)
+                                                                            goToRatingPage(websiteUrl, 1, jwtToken)
+                                                                            sendRes('openNote')
+                                                                        })
+                                                                        .catch(()=> console.log("ERROR - Couldn't get rating options"))
+                                                                    
+                                                                })
+                                                                .catch((e)=>{
+                                                                    console.log("ERROR - Couldn't assign property to user")
+                                                                    goToErrorPage()
+                                                                })
                                                         }
                                                     })
-                                                
+            
+            
+                                            
+                                            }
                                             // IF NO:
-                                            }else{
-                                                console.log("User wasn't already assigned the property")
-                                                addWebsiteToUser(websiteUrl)
-                                                    .then(()=>{
-                                                        getUserRatingOptions()
-                                                            .then(ratingOptions => {
-                                                                addUnratedRatings(ratingOptions, websiteUrl)
-                                                                goToRatingPage(websiteUrl, 1)
-                                                                sendRes('openNote')
-                                                            })
-                                                            .catch(()=> console.log("ERROR - Couldn't get rating options"))
-                                                        
+                                            else{
+                                                console.log('Website is not in the database')
+                                                // SEND WEBSITE DATA TO DATABASE
+                                                sendWebsiteDataToDatabase(res.data, jwtToken)
+                                                    .then(isSuccess => {
+                                                        if (isSuccess){
+                                                            console.log('Property added to database')
+                                                            // CONNECT USER TO PROPERTY
+                                                            addWebsiteToUser(websiteUrl, jwtToken)
+                                                                .then(()=>{
+                                                                    console.log('Property assigned to user')
+                                                                    getUserRatingOptions(jwtToken)
+                                                                    .then(ratingOptions => {
+                                                                        addUnratedRatings(ratingOptions, websiteUrl, jwtToken)
+                                                                        goToRatingPage(websiteUrl, 1, jwtToken)
+                                                                        sendRes('openNote')
+                                                                    })
+                                                                    .catch(()=> console.log("ERROR - Couldn't get rating options"))
+                                                                    
+                                                                })
+
+                                                        }else{
+                                                            console.log("ERROR - Couldn't add property data to database")
+                                                            goToErrorPage()
+                                                        }
                                                     })
-                                                    .catch(()=>{
-                                                        console.log("ERROR - Couldn't assign property to user")
-                                                        goToErrorPage(websiteUrl, 1)
+                                                    .catch(()=> {
+                                                        console.log("ERROR - Couldn't add property data to database")
+                                                        goToErrorPage()
                                                     })
+                                    
                                             }
                                         })
-
-
-                                
-                                }
-                                // IF NO:
-                                else{
-                                    console.log('Website is not in the database')
-                                    // SEND WEBSITE DATA TO DATABASE
-                                    sendWebsiteDataToDatabase(res.data)
-                                        .then(isSuccess => {
-                                            if (isSuccess){
-                                                console.log('Property added to database')
-                                                // CONNECT USER TO PROPERTY
-                                                addWebsiteToUser(websiteUrl)
-                                                    .then(()=>{
-                                                        console.log('Property assigned to user')
-                                                        getUserRatingOptions()
-                                                        .then(ratingOptions => {
-                                                            addUnratedRatings(ratingOptions, websiteUrl)
-                                                            goToRatingPage(websiteUrl, 1)
-                                                            sendRes('openNote')
-                                                        })
-                                                        .catch(()=> console.log("ERROR - Couldn't get rating options"))
-                                                        
-                                                    })
-                                                    .catch(()=>{
-                                                        console.log("ERROR - Couldn't assign property to user")
-                                                        goToErrorPage(websiteUrl, 1)
-                                                    })
-                                            }else{
-                                                console.log("ERROR - Couldn't add property data to database")
-                                                goToErrorPage()
-                                            }
-                                        })
-                                        .catch(()=> {
-                                            console.log("ERROR - Couldn't add property data to database")
-                                            goToErrorPage()
-                                        })
-                        
+                                }else{
+                                    console.log("ERROR - couldn't get website data")
+                                    goToErrorPage()
                                 }
                             })
+                        }
+                        else{
+                            
+                            goToInactivePage()
+                        }
+    
                     }else{
-                        console.log("ERROR - couldn't get website data")
-                        goToErrorPage()
+                        console.log('Not authenticated')
+                        goToLoginPage()
                     }
                 })
-            }
-            else{
-                console.log("This isn't a property website")
-                goToInactivePage()
-            }
-       
-            
-            
-        });
+                    
+                
+    
+                
+           
+                
+                
+            });
+        })
 
     }
 
@@ -511,19 +658,24 @@ chrome.runtime.onMessage.addListener((req, sender, sendRes)=>{
                 const ratingoption = req.data.ratingoption.replace(':', '')
                 const rating = req.data.rating
 
-                addNoteToDatabase(websiteUrl)
+                chrome.storage.local.get('jwtToken', storage => {
+                    const jwtToken = storage.jwtToken 
+                
+                    addNoteToDatabase(websiteUrl, jwtToken)
+    
+    
+                    updateRating(websiteUrl, ratingoption, rating, jwtToken)
+                        .then((ret)=>{
+                            if (ret.isSuccess){
+                                console.log("Rating added");
+                                goToRatingPage(websiteUrl, parseInt(currentPage) + 1, jwtToken)
+                            }else{
+                                console.log("ERROR - Couldn't add the rating")
+                            }
+                        })
+                        .catch(()=>console.log("ERROR - Couldn't add the rating"))
+                })
 
-
-                updateRating(websiteUrl, ratingoption, rating)
-                    .then((ret)=>{
-                        if (ret.isSuccess){
-                            console.log("Rating added");
-                            goToRatingPage(websiteUrl, parseInt(currentPage) + 1)
-                        }else{
-                            console.log("ERROR - Couldn't add the rating")
-                        }
-                    })
-                    .catch(()=>console.log("ERROR - Couldn't add the rating"))
 
             });
           });
@@ -535,6 +687,8 @@ chrome.runtime.onMessage.addListener((req, sender, sendRes)=>{
     }
     return true;
 })
+
+
 
 // ON SKIP PAGE
 chrome.runtime.onMessage.addListener((req, sender, sendRes)=>{
@@ -546,11 +700,17 @@ chrome.runtime.onMessage.addListener((req, sender, sendRes)=>{
                 const websiteUrl = tabs[0].url
                 const currentPage = req.currentPage
 
-                console.log('Skip page')
-                addNoteToDatabase(websiteUrl)
+                chrome.storage.local.get('jwtToken', storage => {
+                    const jwtToken = storage.jwtToken 
+                
+                    console.log('Skip page')
+                    addNoteToDatabase(websiteUrl, jwtToken)
+    
+    
+                    goToRatingPage(websiteUrl, parseInt(currentPage) + 1, jwtToken)
+                
+                })
 
-
-                goToRatingPage(websiteUrl, parseInt(currentPage) + 1)
 
             });
           });
@@ -562,6 +722,9 @@ chrome.runtime.onMessage.addListener((req, sender, sendRes)=>{
     }
     return true;
 })
+
+
+
 
 //#endregion
 

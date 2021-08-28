@@ -8,6 +8,20 @@ chrome.runtime.sendMessage({
 })
 
 
+// ON LOGIN PAGE
+chrome.runtime.onMessage.addListener((req, sender, sendRes) => {
+    
+    if (req.message === 'loginPage'){
+
+        const content = document.getElementById('content')
+    
+        content.innerHTML = `<login-page></login-page>`
+    
+    }
+    return true
+            
+});
+
 // ON NEXT
 chrome.runtime.onMessage.addListener((req, sender, sendRes)=>{
     if (req.message === 'popupNext'){

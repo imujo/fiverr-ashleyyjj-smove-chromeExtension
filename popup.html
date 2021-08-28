@@ -10,12 +10,7 @@
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap"
       rel="stylesheet"
     />
-    <script type="module" src="./components/Content.js"></script>
-    <script type="module" src="./components/RatingButton.js"></script>
-    <script type="module" src="./components/RatingSummary.js"></script>
-    <script type="module" src="./components/Note.js"></script>
-    <script type="module" src="./components/Inactive.js"></script>
-    <script type="module" src="./components/Error.js"></script>
+
     <title>Document</title>
 
     <style>
@@ -61,6 +56,10 @@
         grid-template-columns: 1fr 1fr 1fr;
         justify-items: center;
         padding-top: 3px;
+      }
+
+      a {
+        text-decoration: none;
       }
 
       .autoSave {
@@ -133,12 +132,21 @@
         <div class="underline"></div>
       </div>
 
-      <div class="footer-element">
-        <h5>Account Area</h5>
-        <div class="underline"></div>
-      </div>
+      <a href="http://127.0.0.1:3000/?#/" target="_blank">
+        <div class="footer-element">
+          <h5>Account Area</h5>
+          <div class="underline"></div>
+        </div>
+      </a>
     </div>
 
     <script src="./popup-script.js"></script>
+    <script type="module" src="./components/Content.js"></script>
+    <script type="module" src="./components/RatingButton.js"></script>
+    <script type="module" src="./components/RatingSummary.js"></script>
+    <script type="module" src="./components/Note.js"></script>
+    <script type="module" src="./components/Inactive.js"></script>
+    <script type="module" src="./components/Error.js"></script>
+    <script type="module" src="./components/Login.js"></script>
   </body>
 </html>

@@ -1,8 +1,8 @@
 {
-    "name": "Smove",
+    "name": "smove",
     "manifest_version": 3,
-    "version": "0.1.0",
-    "description": "Keep track of the homes you are searching for",
+    "version": "1.0.0",
+    "description": "Organise the hunt for your dream house, all in one place.",
 
     "icons": {
         "16": "icons/obj-16x16.png",

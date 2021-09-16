@@ -3,7 +3,7 @@
 //#region <------------------ FUNCTIONS ------------------>
 
 const sendWebsiteDataToDatabase = (data, jwtToken) => {
-    return fetch(`http://localhost:5000/api/properties`, {
+    return fetch(`https://server.mysmove.com/api/properties`, {
         method: "POST",
         body: JSON.stringify(data),
         headers: {
@@ -18,7 +18,7 @@ const sendWebsiteDataToDatabase = (data, jwtToken) => {
 
 
  const addWebsiteToUser = (websiteurl, jwtToken) => {
-    return fetch(`http://localhost:5000/api/userproperties`, {
+    return fetch(`https://server.mysmove.com/api/userproperties`, {
         method: "POST",
         body: JSON.stringify({ websiteurl: websiteurl}),
         headers: {
@@ -33,7 +33,7 @@ const sendWebsiteDataToDatabase = (data, jwtToken) => {
 
 
  const getUserRatings = (websiteUrl, jwtToken) => {
-    return fetch(`http://localhost:5000/api/ratings/all`, {
+    return fetch(`https://server.mysmove.com/api/ratings/all`, {
         method: "POST",
         body: JSON.stringify({
             websiteurl: websiteUrl
@@ -50,7 +50,7 @@ const sendWebsiteDataToDatabase = (data, jwtToken) => {
 }
 
 const getUserProperty = (websiteUrl, jwtToken) => {
-    return fetch(`http://localhost:5000/api/userproperties/one`, {
+    return fetch(`https://server.mysmove.com/api/userproperties/one`, {
         method: "POST",
         body: JSON.stringify({
             websiteurl: websiteUrl
@@ -67,7 +67,7 @@ const getUserProperty = (websiteUrl, jwtToken) => {
 }
 
 const getUserRatingOptions = (jwtToken) => {
-    return fetch(`http://localhost:5000/api/user/ratingoptions`, {
+    return fetch(`https://server.mysmove.com/api/user/ratingoptions`, {
         method: "GET",
         headers: {
             "Content-type": "application/json; charset=UTF-8",
@@ -81,7 +81,7 @@ const getUserRatingOptions = (jwtToken) => {
 }
 
  const updateWebsiteData = (data, jwtToken) => {
-    return fetch(`http://localhost:5000/api/properties`, {
+    return fetch(`https://server.mysmove.com/api/properties`, {
         method: "PUT",
         body: JSON.stringify(data),
         headers: {
@@ -96,7 +96,7 @@ const getUserRatingOptions = (jwtToken) => {
 
 
  const getWebsiteDataFromDatabase = (websiteUrl, jwtToken) => {
-    return fetch(`http://localhost:5000/api/properties/one`, {
+    return fetch(`https://server.mysmove.com/api/properties/one`, {
         method: "POST",
         body: JSON.stringify({websiteurl: websiteUrl}),
         headers: {
@@ -123,7 +123,7 @@ const getUserRatingOptions = (jwtToken) => {
         message: 'getNote'
     }, (note)=>{
 
-        fetch(`http://localhost:5000/api/userproperties/note`, {
+        fetch(`https://server.mysmove.com/api/userproperties/note`, {
             method: "PUT",
             body: JSON.stringify({ note: note, websiteurl: websiteUrl}),
             headers: {
@@ -142,7 +142,7 @@ const getUserRatingOptions = (jwtToken) => {
 
 
  const addRating = (websiteurl, ratingoption, rating, jwtToken) => {
-    return fetch(`http://localhost:5000/api/ratings/add`, {
+    return fetch(`https://server.mysmove.com/api/ratings/add`, {
         method: "POST",
         body: JSON.stringify({
             websiteurl: websiteurl,
@@ -160,7 +160,7 @@ const getUserRatingOptions = (jwtToken) => {
 }
 
 const updateRating = (websiteurl, ratingoption, rating, jwtToken) => {
-    return fetch(`http://localhost:5000/api/ratings`, {
+    return fetch(`https://server.mysmove.com/api/ratings`, {
         method: "PUT",
         body: JSON.stringify({
             websiteurl: websiteurl,
@@ -178,7 +178,7 @@ const updateRating = (websiteurl, ratingoption, rating, jwtToken) => {
 }
 
 const updateDashboardLocation = (websiteurl, dashboardlocation, jwtToken) => {
-    return fetch(`http://localhost:5000/api/userproperties/dashboardlocation`, {
+    return fetch(`https://server.mysmove.com/api/userproperties/dashboardlocation`, {
         method: "PUT",
         body: JSON.stringify({
             websiteurl: websiteurl,
@@ -241,7 +241,7 @@ const addUnratedRatings = (ratingOptions, websiteUrl, jwtToken) => {
 }
 
 const logIn = (email, password) => {
-    return fetch(`http://localhost:5000/auth/login`, {
+    return fetch(`https://server.mysmove.com/auth/login`, {
         method: "POST",
         body: JSON.stringify({
             email: email,
@@ -272,7 +272,7 @@ const goToRatingPage = (websiteUrl, page, jwtToken) => {
         console.log("Go to rating page")
         // GET USER DATA
 
-        fetch(`http://localhost:5000/api/user/ratingoptions`, {
+        fetch(`https://server.mysmove.com/api/user/ratingoptions`, {
             method: "GET",
             headers: {
                 "Content-type": "application/json; charset=UTF-8",
@@ -285,7 +285,7 @@ const goToRatingPage = (websiteUrl, page, jwtToken) => {
                 const ratingOption = user.data[`ratingoption${page}`]
                 
                 // GET RATINGS
-                fetch(`http://localhost:5000/api/ratings`, {
+                fetch(`https://server.mysmove.com/api/ratings`, {
                     method: "POST",
                     body: JSON.stringify({
                         websiteurl: websiteUrl,

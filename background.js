@@ -1,5 +1,4 @@
 
-
 //#region <------------------ FUNCTIONS ------------------>
 
 const sendWebsiteDataToDatabase = (data, jwtToken) => {
@@ -18,9 +17,13 @@ const sendWebsiteDataToDatabase = (data, jwtToken) => {
 
 
  const addWebsiteToUser = (websiteurl, jwtToken) => {
+     console.log(addMinutes(new Date(), 3), 'adding to server')
     return fetch(`https://server.mysmove.com/api/userproperties`, {
         method: "POST",
-        body: JSON.stringify({ websiteurl: websiteurl}),
+        body: JSON.stringify({
+            websiteurl: websiteurl,
+            rating_end_time: addMinutes(new Date(), 3)
+        }),
         headers: {
             "Content-type": "application/json; charset=UTF-8",
             "Authorization": jwtToken
@@ -254,6 +257,14 @@ const logIn = (email, password) => {
         .then(response => response.json()) 
         .then(json => {return json})
         .catch(err => {console.log(err); return false });
+}
+
+const addMinutes = (date, minutes) => {
+    return new Date(date.getTime() + minutes*60000);
+}
+
+const has3MinsPassed = (rating_end_time) => {
+    return new Date(rating_end_time).getTime() > new Date().getTime() ? false : true;
 }
 
 
@@ -524,6 +535,7 @@ chrome.runtime.onMessage.addListener((req, sender, sendRes)=>{
                                                 // CHECK IF USER HAS PROPERTY
                                                 getUserProperty(websiteUrl, jwtToken)
                                                     .then(userProperty=>{
+                                                        console.log(userProperty)
             
                                                         // IF YES:
                                                         if (userProperty){
@@ -531,22 +543,23 @@ chrome.runtime.onMessage.addListener((req, sender, sendRes)=>{
                                                             
                                                             getUserRatings(websiteUrl, jwtToken)
                                                                 .then(userRatings =>{
-                                                                    console.log(userRatings)
 
                                                                 
-                                                                    let unratedNumbers = 0
+                                                                    let unratedNumbers = []
             
                                                                     userRatings.forEach(userRating => {
                                                                         if (userRating.rating === 'Unrated'){
-                                                                            unratedNumbers++
-                                                                        }
+                                                                            unratedNumbers.push(1)
+                                                                        }else { unratedNumbers.push(0) }
                                                                     })
+
+                                                                    
             
-                                                                    if (unratedNumbers < 4){
+                                                                    if (unratedNumbers.includes(0) && has3MinsPassed(userRatings.rating_end_time)){
                                                                         goToSummaryPage(websiteUrl, jwtToken)
                                                                         
                                                                     }else{
-                                                                        goToRatingPage(websiteUrl, 1, jwtToken)
+                                                                        goToRatingPage(websiteUrl, unratedNumbers.indexOf(0), jwtToken)
                                                                         sendRes('openNote')
                                                                     }
                                                                 })

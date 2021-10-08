@@ -94,7 +94,7 @@ input {
     </form>
 
     <p class="login__text">
-    If you don't have an account, <a href="http://127.0.0.1:3000/?#/signup" class="link" target="_blank">sign up</a> on our
+    If you don't have an account, <a href="https://dashboard.mysmove.com/signup" class="link" target="_blank">sign up</a> on our
     website, come back and log in.
     </p>
     <p class="errorText"></p>

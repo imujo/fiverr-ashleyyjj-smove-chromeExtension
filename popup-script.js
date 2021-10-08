@@ -59,6 +59,7 @@ chrome.runtime.onMessage.addListener((req, sender, sendRes)=>{
 // ON ERROR PAGE
 chrome.runtime.onMessage.addListener((req, sender, sendRes)=>{
     if (req.message === 'errorPage'){
+        console.log('error page')
         const content = document.getElementById('content')
         content.innerHTML = `<error-page></error-page>`
     }
@@ -87,8 +88,6 @@ chrome.runtime.onMessage.addListener((req, sender, sendRes)=>{
     return true;
 })
 
-const content = document.getElementById('content')
-        content.innerHTML = `<error-page></error-page>`
 
 // Close
 document.getElementById('close').addEventListener('click', ()=>{

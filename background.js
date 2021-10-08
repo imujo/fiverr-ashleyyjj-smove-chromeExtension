@@ -554,7 +554,7 @@ chrome.runtime.onMessage.addListener((req, sender, sendRes)=>{
                                                                     })
 
                                                                     
-            
+                                                                    console.log(unratedNumbers.includes(0), has3MinsPassed(userRatings.rating_end_time))
                                                                     if (unratedNumbers.includes(0) && has3MinsPassed(userRatings.rating_end_time)){
                                                                         goToSummaryPage(websiteUrl, jwtToken)
                                                                         

@@ -264,7 +264,7 @@ const addMinutes = (date, minutes) => {
 }
 
 const has3MinsPassed = (rating_end_time) => {
-    return new Date(rating_end_time).getTime() > new Date().getTime() ? false : true;
+    return new Date().getTime() > new Date(rating_end_time).getTime() ? true : false;
 }
 
 
@@ -553,13 +553,12 @@ chrome.runtime.onMessage.addListener((req, sender, sendRes)=>{
                                                                         }else { unratedNumbers.push(0) }
                                                                     })
 
-                                                                    
-                                                                    console.log(unratedNumbers.includes(0), has3MinsPassed(userRatings.rating_end_time))
-                                                                    if (unratedNumbers.includes(0) && has3MinsPassed(userRatings.rating_end_time)){
+
+                                                                    if (unratedNumbers.includes(0) && has3MinsPassed(userProperty.rating_end_time)){
                                                                         goToSummaryPage(websiteUrl, jwtToken)
                                                                         
                                                                     }else{
-                                                                        goToRatingPage(websiteUrl, unratedNumbers.indexOf(0), jwtToken)
+                                                                        goToRatingPage(websiteUrl, unratedNumbers.indexOf(1) + 1, jwtToken)
                                                                         sendRes('openNote')
                                                                     }
                                                                 })
